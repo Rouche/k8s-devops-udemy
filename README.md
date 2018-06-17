@@ -5,6 +5,13 @@ https://github.com/jleetutorial/kubernetes-demo
 Kubernetes:
 https://kubernetes.io/docs/imported/release/notes/
 
+Cheat sheet:
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+References:
+https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
+
+
 ## Setup
 
 Facebook: https://www.facebook.com/groups/1911219079195863/
@@ -30,3 +37,16 @@ https://kubernetes.io/docs/setup/minikube/
 
 `PS> kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.10 --port=8080`  
 `PS> kubectl expose deployment hello-minikube --type=NodePort`
+
+### Commands For Cut & Paste
+
+```
+kubectl get pods
+kubectl get pods [pod name]
+kubectl expose <type name> <identifier/name> [—port=external port] [—target-port=container-port [—type=service-type]
+kubectl port-forward <pod name> [LOCAL_PORT:]REMOTE_PORT]
+kubectl attach <pod name> -c <container>
+kubectl exec  [-it] <pod name> [-c CONTAINER] — COMMAND [args…]
+kubectl label [—overwrite] <type> KEY_1=VAL_1 ….
+kubectl run <name> —image=image
+```
