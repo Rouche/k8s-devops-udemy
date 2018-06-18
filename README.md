@@ -38,7 +38,7 @@ https://kubernetes.io/docs/setup/minikube/
 `PS> kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.10 --port=8080`  
 `PS> kubectl expose deployment hello-minikube --type=NodePort`
 
-### Commands For Cut & Paste
+### Commands utilities
 
 ```
 kubectl get pods
@@ -46,7 +46,38 @@ kubectl get pods [pod name]
 kubectl expose <type name> <identifier/name> [—port=external port] [—target-port=container-port [—type=service-type]
 kubectl port-forward <pod name> [LOCAL_PORT:]REMOTE_PORT]
 kubectl attach <pod name> -c <container>
-kubectl exec  [-it] <pod name> [-c CONTAINER] — COMMAND [args…]
+kubectl exec [-it] <pod name> [-c CONTAINER] — COMMAND [args…]
 kubectl label [—overwrite] <type> KEY_1=VAL_1 ….
 kubectl run <name> —image=image
 ```
+
+### Commands scaling
+```
+kubectl scale —replicas=4 deployment/tomcat-deployment 
+kubectl expose deployment tomcat-deployment --type=NodePort
+kubectl expose deployment tomcat-deployment —type=LoadBalancer —port=8080 —target-port=8080 —name tomcat-load-balancer
+kubectl describe services tomcat-load-balancer
+```
+- LoadBalancer will expose a single port to the outside world connecting to multiple replicas in a deployment.
+
+### Commands deployments
+```
+kubectl get deployments
+kubectl rollout status
+kubectl set image deployment/[metadata name] [container name]=[image name]:[version]
+kubectl rollout history
+```
+
+### Commands dashboard
+
+```
+kubectl proxy
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+```
+I have `kubectl proxy` running in the background and I tried to open that link, and I can see this error:
+
+Error: 'tls: oversized record received with length 20527' 
+Trying to reach: 'https://100.116.93.11:9090/'  
+This works though:  http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy
+
+

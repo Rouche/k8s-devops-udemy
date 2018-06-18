@@ -17,4 +17,6 @@ spec:
         image: tomcat:9-jre8
         ports:
         - containerPort: 8080
-        
+# @Important selector
+      nodeSelector:
+        storageType: ssd
