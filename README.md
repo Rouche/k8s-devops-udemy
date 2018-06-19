@@ -43,19 +43,19 @@ https://kubernetes.io/docs/setup/minikube/
 ```
 kubectl get pods
 kubectl get pods [pod name]
-kubectl expose <type name> <identifier/name> [—port=external port] [—target-port=container-port [—type=service-type]
+kubectl expose <type name> <identifier/name> [--port=external port] [--target-port=container-port [--type=service-type]
 kubectl port-forward <pod name> [LOCAL_PORT:]REMOTE_PORT]
 kubectl attach <pod name> -c <container>
-kubectl exec [-it] <pod name> [-c CONTAINER] — COMMAND [args…]
-kubectl label [—overwrite] <type> KEY_1=VAL_1 ….
-kubectl run <name> —image=image
+kubectl exec [-it] <pod name> [-c CONTAINER] -- COMMAND [args…]
+kubectl label [--overwrite] <type> KEY_1=VAL_1 ….
+kubectl run <name> --image=image
 ```
 
 ### Commands scaling
 ```
-kubectl scale —replicas=4 deployment/tomcat-deployment 
+kubectl scale --replicas=4 deployment/tomcat-deployment 
 kubectl expose deployment tomcat-deployment --type=NodePort
-kubectl expose deployment tomcat-deployment —type=LoadBalancer —port=8080 —target-port=8080 —name tomcat-load-balancer
+kubectl expose deployment tomcat-deployment --type=LoadBalancer --port=8080 --target-port=8080 --name tomcat-load-balancer
 kubectl describe services tomcat-load-balancer
 ```
 - LoadBalancer will expose a single port to the outside world connecting to multiple replicas in a deployment.
@@ -67,6 +67,10 @@ kubectl rollout status
 kubectl set image deployment/[metadata name] [container name]=[image name]:[version]
 kubectl rollout history
 ```
+
+### Readiness probes lecture 19.
+
+- see Health Checks
 
 ### Commands dashboard
 
@@ -80,4 +84,10 @@ Error: 'tls: oversized record received with length 20527'
 Trying to reach: 'https://100.116.93.11:9090/'  
 This works though:  http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy
 
+### Exercise
+
+-Problem with `EXTERNAL-IP <pending>`  
+It looks like you are using a custom Kubernetes Cluster (using minikube, kubeadm or the like).  
+In this case, there is no LoadBalancer integrated (unlike AWS or Google Cloud).  
+With this default setup, you can only use NodePort (more info here: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) or an Ingress Controller. With the Ingress Controller you can setup a domain name which maps to your pod (more information here: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)
 

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo
+        ports:
+        - containerPort: 27017
+
+#kubectl expose deployment mongo-deployment --type=LoadBalancer --port=27017 --name mongo-load-balancer

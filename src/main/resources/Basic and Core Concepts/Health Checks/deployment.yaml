@@ -17,12 +17,15 @@ spec:
         image: tomcat:9-jre8
         ports:
         - containerPort: 8080
+        #Verify with : PS> kubectl describe deployment tomcat-deployment
+        #Tells kubernetes that the pod is working (after ready)
         livenessProbe:
           httpGet:
             path: /
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 30
+        #Tells kubernetes that the pod is ready to work
         readinessProbe:
           httpGet:
             path: /
