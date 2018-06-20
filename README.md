@@ -82,7 +82,7 @@ I have `kubectl proxy` running in the background and I tried to open that link, 
 
 Error: 'tls: oversized record received with length 20527' 
 Trying to reach: 'https://100.116.93.11:9090/'  
-This works though:  http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy
+This works though: http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy
 
 ### Exercise
 

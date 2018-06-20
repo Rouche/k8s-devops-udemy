@@ -12,7 +12,7 @@ spec:
     tier: mysql
   clusterIP: None
 ---
-apiVersion: apps/v1beta2 # for versions before 1.8.0 use apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wordpress-mysql
@@ -32,7 +32,13 @@ spec:
         tier: mysql
     spec:
       containers:
-      - image: mysql:5.6
+      # For wordpress: __construct(): The server requested authentication method unknown to the client [caching_sha2_password]
+      # https://dev.mysql.com/doc/apis-php/en/apis-php-pdo-mysql.html
+      # When running a PHP version before 7.1.16, or PHP 7.2 before 7.2.4, set MySQL 8 Server's default password plugin to mysql_native_password or else you will see errors similar to The server requested authentication method unknown to the client [caching_sha2_password] even when caching_sha2_password is not used.
+      #
+      # This is because MySQL 8 defaults to caching_sha2_password, a plugin that is not recognized by the older PHP (mysqlnd) releases.
+      # Instead, change it by setting default_authentication_plugin=mysql_native_password in my.cnf. The caching_sha2_password plugin will be supported in a future PHP release. In the meantime, the mysql_xdevapi extension does support it.
+      - image: mysql:5.7
         name: mysql
         env:
         - name: MYSQL_ROOT_PASSWORD
