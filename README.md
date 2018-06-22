@@ -91,3 +91,16 @@ It looks like you are using a custom Kubernetes Cluster (using minikube, kubeadm
 In this case, there is no LoadBalancer integrated (unlike AWS or Google Cloud).  
 With this default setup, you can only use NodePort (more info here: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) or an Ingress Controller. With the Ingress Controller you can setup a domain name which maps to your pod (more information here: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)
 
+### apply and updating deployment with apply
+
+Using kubectl apply to create the resource is not a workaround. It is intended usage.
+http://kubernetes.io/docs/user-guide/kubectl/kubectl_apply/
+
+Using create instead, without --save-config, is incorrect usage. I recommend sending the bug report / feature request to helm.
+
+### Secrets
+
+```
+kubectl create secret generic db-user-pass --from-file=./username.txt --from-file=./password.txt
+kubectl create secret generic mysql-pass --from-literal=password=YOUR_PASSWORD
+```
