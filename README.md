@@ -12,6 +12,10 @@ References:
 https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
 
 
+Important:
+ALWAYS use `minikube stop` before reboot
+https://github.com/kubernetes/minikube/issues/2561
+
 ## Setup
 
 Facebook: https://www.facebook.com/groups/1911219079195863/
@@ -41,31 +45,31 @@ https://kubernetes.io/docs/setup/minikube/
 ### Commands utilities
 
 ```
-kubectl get pods
-kubectl get pods [pod name]
-kubectl expose <type name> <identifier/name> [--port=external port] [--target-port=container-port [--type=service-type]
-kubectl port-forward <pod name> [LOCAL_PORT:]REMOTE_PORT]
-kubectl attach <pod name> -c <container>
-kubectl exec [-it] <pod name> [-c CONTAINER] -- COMMAND [args…]
-kubectl label [--overwrite] <type> KEY_1=VAL_1 ….
-kubectl run <name> --image=image
+PS> kubectl get pods
+PS> kubectl get pods [pod name]
+PS> kubectl expose <type name> <identifier/name> [--port=external port] [--target-port=container-port [--type=service-type]
+PS> kubectl port-forward <pod name> [LOCAL_PORT:]REMOTE_PORT]
+PS> kubectl attach <pod name> -c <container>
+PS> kubectl exec [-it] <pod name> [-c CONTAINER] -- COMMAND [args…]
+PS> kubectl label [--overwrite] <type> KEY_1=VAL_1 ….
+PS> kubectl run <name> --image=image
 ```
 
 ### Commands scaling
 ```
-kubectl scale --replicas=4 deployment/tomcat-deployment 
-kubectl expose deployment tomcat-deployment --type=NodePort
-kubectl expose deployment tomcat-deployment --type=LoadBalancer --port=8080 --target-port=8080 --name tomcat-load-balancer
-kubectl describe services tomcat-load-balancer
+PS> kubectl scale --replicas=4 deployment/tomcat-deployment 
+PS> kubectl expose deployment tomcat-deployment --type=NodePort
+PS> kubectl expose deployment tomcat-deployment --type=LoadBalancer --port=8080 --target-port=8080 --name tomcat-load-balancer
+PS> kubectl describe services tomcat-load-balancer
 ```
 - LoadBalancer will expose a single port to the outside world connecting to multiple replicas in a deployment.
 
 ### Commands deployments
 ```
-kubectl get deployments
-kubectl rollout status
-kubectl set image deployment/[metadata name] [container name]=[image name]:[version]
-kubectl rollout history
+PS> kubectl get deployments
+PS> kubectl rollout status
+PS> kubectl set image deployment/[metadata name] [container name]=[image name]:[version]
+PS> kubectl rollout history
 ```
 
 ### Readiness probes lecture 19.
@@ -75,10 +79,10 @@ kubectl rollout history
 ### Commands dashboard
 
 ```
-kubectl proxy
-kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+PS> kubectl proxy
+PS> kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 ```
-I have `kubectl proxy` running in the background and I tried to open that link, and I can see this error:
+I have `PS> kubectl proxy` running in the background and I tried to open that link, and I can see this error:
 
 Error: 'tls: oversized record received with length 20527' 
 Trying to reach: 'https://100.116.93.11:9090/'  
@@ -93,7 +97,7 @@ With this default setup, you can only use NodePort (more info here: https://kube
 
 ### apply and updating deployment with apply
 
-Using kubectl apply to create the resource is not a workaround. It is intended usage.
+Using `PS> kubectl apply` to create the resource is not a workaround. It is intended usage.
 http://kubernetes.io/docs/user-guide/kubectl/kubectl_apply/
 
 Using create instead, without --save-config, is incorrect usage. I recommend sending the bug report / feature request to helm.
@@ -101,6 +105,24 @@ Using create instead, without --save-config, is incorrect usage. I recommend sen
 ### Secrets
 
 ```
-kubectl create secret generic db-user-pass --from-file=./username.txt --from-file=./password.txt
-kubectl create secret generic mysql-pass --from-literal=password=YOUR_PASSWORD
+PS> kubectl create secret generic db-user-pass --from-file=./username.txt --from-file=./password.txt
+PS> kubectl create secret generic mysql-pass --from-literal=password=YOUR_PASSWORD
 ```
+
+### Monitoring & Metrics
+
+Heapster: (CNCF) collect data on all pods talking Kubelets and feed InfluxDB 
+InfluxDB: 
+Grafana: Visual tool
+
+```
+PS> minikube addons enable heapster
+//check status 
+PS> kubectl get pods --namespace=kube-system
+//access Grafana Dashboard 
+PS> minikube addons open heapster 
+```
+
+- login with admin:admin
+
+### Namespaces
