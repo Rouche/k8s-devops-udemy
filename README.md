@@ -11,6 +11,12 @@ https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 References:
 https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands
 
+Notes:
+1. '---' is used for separating documents. It allows us to place multiple things in a single file - e.g. services, deployments, etc. We could have made separate documents - one for service, one for deployment, but the '---' allows us placing them in a single file.
+
+2. For deployments we use 'apiVersion: apps/v1', for everything else we use 'apiVersion: v1'
+
+3. 'kubectl create' can be used only for creating new deployments; 'kubectl apply' can be used for both creating and updating deployments. Other than that they're identical.
 
 Important:
 ALWAYS use `minikube stop` before reboot
@@ -142,3 +148,39 @@ PS> kubectl create -f ./cpu-limits.yaml —namespace=cpu-limited-tomcat (from th
 PS> kubectl apply -f ./tomcat-deployment.yaml —namespace=cpu-limited-tomcat (from the GitHub repo directory for this lecture)
 PS> kubectl describe deployment tomcat-deployment —namespace=cpu-limited-tomcat
 ```    
+
+### Auto-Scaling
+
+- For test : Artificially limit CPU on wordpress. (See Auto-Scaling yaml)
+
+```
+kubectl autoscale deployment wordpress --cpu-percent=50 --min=1 --max=5
+```
+
+Run busybox and start load.
+```
+kubectl run -i --tty load-generator --image=busybox /bin/sh
+while true; do wget -q -O- http://wordpress.default.svc.cluster.local; done
+```
+
+Get status
+```
+kubectl get hpa
+```
+
+- NOTE  
+Busybox wont work through minikube.   
+I think this is related to wordpress storing original adress in server.   
+If it differs, it will redirrect to its original with a 301.
+
+    / # wget -S http://wordpress.default.svc.cluster.local  
+    Connecting to wordpress.default.svc.cluster.local (10.104.226.140:80)  
+      HTTP/1.1 301 Moved Permanently  
+      Date: Sun, 24 Jun 2018 11:59:509 GMT  
+      Server: Apache/2.4.25 (Debian)  
+      X-Powered-By: PHP/7.2.6  
+      Location: http://wordpress.default.svc.cluster.local:30068/  
+    
+    Of course, nothing runs internally on port 30068, so its stuck there.
+    
+### Auditing

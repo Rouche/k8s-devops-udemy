@@ -1,0 +1,13 @@
+# test Busybox with tomcat-deployment in Namespaces dir.
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-service
+  labels:
+    app: tomcat
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: tomcat
+  type: NodePort
