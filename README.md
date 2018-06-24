@@ -125,4 +125,20 @@ PS> minikube addons open heapster
 
 - login with admin:admin
 
-### Namespaces
+### Namespaces & Resource Limits
+
+- devide ressources across multiple users or teams.
+- RessourceQuotas can limit ressources when assigned to a Namespace
+    - CPU
+    - Memory
+    - Storage
+- 200m CPU = 20% usage
+
+```
+PS> kubectl create namespace <namespace name>
+PS> kubectl get namespace
+PS> kubectl create namespace cpu-limited-tomcat
+PS> kubectl create -f ./cpu-limits.yaml —namespace=cpu-limited-tomcat (from the GitHub repo directory for this lecture)
+PS> kubectl apply -f ./tomcat-deployment.yaml —namespace=cpu-limited-tomcat (from the GitHub repo directory for this lecture)
+PS> kubectl describe deployment tomcat-deployment —namespace=cpu-limited-tomcat
+```    
