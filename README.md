@@ -184,3 +184,15 @@ If it differs, it will redirrect to its original with a 301.
     Of course, nothing runs internally on port 30068, so its stuck there.
     
 ### Auditing
+
+Issues:  
+https://github.com/kubernetes/minikube/issues/1609
+https://github.com/kubernetes/minikube/issues/2934
+
+Api server code:  
+https://github.com/kubernetes/minikube/tree/v0.28.0/vendor/k8s.io
+
+Doc:  
+https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
+
+### Masters
