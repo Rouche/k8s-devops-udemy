@@ -195,4 +195,7 @@ https://github.com/kubernetes/minikube/tree/v0.28.0/vendor/k8s.io
 Doc:  
 https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
 
-### Masters
+### High Availability
+
+![architecture](src/main/resources/static/high-avail.png)
+
