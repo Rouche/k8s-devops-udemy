@@ -168,21 +168,26 @@ Get status
 kubectl get hpa
 ```
 
-- NOTE  
-Busybox wont work through minikube.   
-I think this is related to wordpress storing original adress in server.   
-If it differs, it will redirrect to its original with a 301.
+- NOTE
+  
+1. `minikube` no longer has `metrics-server` enabled by default. To enable it:
 
-    / # wget -S http://wordpress.default.svc.cluster.local  
-    Connecting to wordpress.default.svc.cluster.local (10.104.226.140:80)  
-      HTTP/1.1 301 Moved Permanently  
-      Date: Sun, 24 Jun 2018 11:59:509 GMT  
-      Server: Apache/2.4.25 (Debian)  
-      X-Powered-By: PHP/7.2.6  
-      Location: http://wordpress.default.svc.cluster.local:30068/  
-    
-    Of course, nothing runs internally on port 30068, so its stuck there.
-    
+    ```
+    minikube service list
+    minikube addons enable metrics-server
+    kubectl get pod --namespace=kube-system
+    ``` 
+
+2. Wordpress redirects to canonical name by default.  
+Unfortunately, it believes that you should be using port 3xxxx so it redirects to that.  
+In the actual container, nothing is listening to that port.  
+You could disable redirection by adding: `remove_action('template_redirect', 'redirect_canonical');` to `wp-config.php`.  
+However, I think it's much easier to just generate generate load locally (only tested on Linux, YMMV):
+
+    ```
+    while true; do wget -q -O -S $(minikube service wordpress --url); done
+    ``` 
+
 ### Auditing
 
 Issues:  
@@ -199,3 +204,38 @@ https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
 
 ![architecture](src/main/resources/static/high-avail.png)
 
+- AWS access Key -> Name (top right) -> My Security Credentials -> Access keys -> Create new
+
+- KOPS: Easyest is to install Ubuntu from https://www.osboxes.org/
+    - install VirtualBox Extension File -> Preferences -> Extensions -> Add new
+    - Once booted: Devices -> Insert Guest Additions CD Image... -> Install
+    - run apt-get update and install kubectl
+
+- Create bucket    
+```aws s3api create-bucket --bucket kitfox-k8s-test-bucket --region us-east-2 --create-bucket-configuration LocationConstraint=us-east-2```
+
+- Create cluster
+    - Double verify ~/id_rsa.pub. if not use `ssh-keygen` with defaults.  
+    - zones: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
+    
+        ```
+        export KOPS_STATE_STORE=s3://kitfox-k8s-test-bucket
+        kops create cluster kitfox-k8s-test.k8s.local --zones us-east-2a --yes
+        ```
+        
+        ```
+        kops delete cluster kitfox-k8s-test.k8s.local --yes
+        ```
+        And try again.
+        
+- After creation suggestions:
+    * validate cluster: `kops validate cluster`
+    * list nodes: `kubectl get nodes --show-labels`
+    * ssh to the master: `ssh -i ~/.ssh/id_rsa admin@api.kitfox-k8s-test.k8s.local`  
+    You will have to get the public DNS form console:
+    ![DNS](src/main/resources/static/dns.png)
+    Ex: `ssh -i ~/.ssh/id_rsa admin@ec2-13-59-88-174.us-east-2.compute.amazonaws.com`
+    * the admin user is specific to Debian. If not using Debian please use the appropriate user based on your OS.
+    * read about installing addons at: https://github.com/kubernetes/kops/blob/master/docs/addons.md.
+
+### High Availability : Multiple Masters
