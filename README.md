@@ -239,3 +239,26 @@ https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
     * read about installing addons at: https://github.com/kubernetes/kops/blob/master/docs/addons.md.
 
 ### High Availability : Multiple Masters
+
+- Create HA cluster
+    ```
+    export KOPS_STATE_STORE=s3://kitfox-k8s-test-bucket
+    kops create cluster kitfox-k8s-test.k8s.local --zones us-east-2a,us-east-2b,us-east-2c --node-count 3 --master-zones us-east-2a,us-east-2b,us-east-2c --yes 
+    ```
+
+- Run yaml in Setting up High Availability
+
+### Volumes on AWS
+
+- use small cluster
+- deploy mysql and wordpress with yaml in Kubernetes in Production/Volumes on AWS
+- Checks
+    ```
+    kubectl describe pv (persistentvolumes shortcut)
+    kubectl describe service wordpress
+    ```
+    - LoadBalancer Ingresses = public url.
+    
+### Books
+
+http://www.level-up.one/devops-pdf-book
