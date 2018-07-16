@@ -102,6 +102,8 @@ In this case, there is no LoadBalancer integrated (unlike AWS or Google Cloud).
 With this default setup, you can only use NodePort (more info here: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport) or an Ingress Controller. With the Ingress Controller you can setup a domain name which maps to your pod (more information here: https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-controllers)
 
 ### apply and updating deployment with apply
+Read: https://github.com/kubernetes/kubernetes/issues/35134
+https://groups.google.com/forum/#!topic/kubernetes-users/eA0KlrynWCQ
 
 Using `PS> kubectl apply` to create the resource is not a workaround. It is intended usage.
 http://kubernetes.io/docs/user-guide/kubectl/kubectl_apply/
